@@ -167,8 +167,8 @@ class Permian2019DataModule(pl.LightningDataModule):
         self.train_dataframe_original = self.load_dataframe(train_dataset_path)
 
         # Extract features if needed
-        # if len(self.features_extract) > 0:
-            # feature_extration.extract_features(self.features_extract, self.train_dataframe_original)
+        if len(self.features_extract) > 0:
+            feature_extration.extract_features(self.features_extract, self.train_dataframe_original)
 
         # slice train_dataframe in windows
         if np.any(np.array(self.training_size) < np.array([512, 512])):
@@ -218,8 +218,8 @@ class Permian2019DataModule(pl.LightningDataModule):
         test_dataframe = self.load_dataframe(test_dataset_path)
         test_dataframe = test_dataframe.sort_values(["has_plume","qplume"],ascending=False)
 
-        # if len(self.features_extract) > 0:
-            # feature_extration.extract_features(self.features_extract, test_dataframe)
+        if len(self.features_extract) > 0:
+            feature_extration.extract_features(self.features_extract, test_dataframe)
 
         self.test_dataset = dataset.STARCOPDataset(test_dataframe,
                                                    input_products=self.input_products,
