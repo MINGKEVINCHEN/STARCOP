@@ -79,7 +79,7 @@ class Permian2019DataModule(pl.LightningDataModule):
         self.training_size_overlap = self.settings.dataset.training_size_overlap
         self.root_folder = self.settings.dataset.root_folder
         self.train_csv = self.settings.dataset.train_csv
-        self.test_csv = "test.csv"
+        self.test_csv = 'test.csv'
         
         if self.settings.dataset.use_weight_loss:
             self.weight_loss = self.settings.dataset.weight_loss
@@ -143,7 +143,8 @@ class Permian2019DataModule(pl.LightningDataModule):
                           f in raw_bands_available]
 
         train_dataset_path = os.path.join(self.root_folder, self.train_csv)
-        test_dataset_path = os.path.join(self.root_folder, self.test_csv)
+        test_dataset_path = r"C:\Users\DELL\Documents\GitHub\STARCOP\notebooks\datasets\STARCOP_test"
+        test_dataset_path = os.path.join(test_dataset_path, self.test_csv)
 
 
         products = list(self.raw_bands)
@@ -152,25 +153,22 @@ class Permian2019DataModule(pl.LightningDataModule):
 
         # Download the data to self.root_folder if needed
         if not os.path.exists(train_dataset_path):
-            log.info(f"File for training dataset {train_dataset_path} not found we will download the data to {self.root_folder}")
-            from starcop.data import sampling_dataset
-            sampling_dataset.generate_train_data_permian_2019(self.root_folder, num_processes=self.num_workers,
-                                                              products=products)
+            raise FileNotFoundError(
+                f"Train dataset file not found at {train_dataset_path}. Please make sure it exists locally and is correctly referenced in your CSV."
+            )
 
         # Download the data to self.root_folder if needed
         if not os.path.exists(test_dataset_path):
-            from starcop.data import sampling_dataset
-            log.info(
-                f"File for testing dataset {test_dataset_path} not found we will download the data to {self.root_folder}")
-            sampling_dataset.generate_test_data_permian_2019(self.root_folder, num_processes=self.num_workers,
-                                                             products=products)
+            raise FileNotFoundError(
+                f"Test dataset file not found at {test_dataset_path}. Please make sure it exists locally and is correctly referenced in your CSV."
+            )
 
         # Process train dataframe
         self.train_dataframe_original = self.load_dataframe(train_dataset_path)
 
         # Extract features if needed
-        if len(self.features_extract) > 0:
-            feature_extration.extract_features(self.features_extract, self.train_dataframe_original)
+        # if len(self.features_extract) > 0:
+            # feature_extration.extract_features(self.features_extract, self.train_dataframe_original)
 
         # slice train_dataframe in windows
         if np.any(np.array(self.training_size) < np.array([512, 512])):
@@ -220,8 +218,8 @@ class Permian2019DataModule(pl.LightningDataModule):
         test_dataframe = self.load_dataframe(test_dataset_path)
         test_dataframe = test_dataframe.sort_values(["has_plume","qplume"],ascending=False)
 
-        if len(self.features_extract) > 0:
-            feature_extration.extract_features(self.features_extract, test_dataframe)
+        # if len(self.features_extract) > 0:
+            # feature_extration.extract_features(self.features_extract, test_dataframe)
 
         self.test_dataset = dataset.STARCOPDataset(test_dataframe,
                                                    input_products=self.input_products,

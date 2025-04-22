@@ -25,8 +25,8 @@ dataset:
   training_size: [128, 128]
   training_size_overlap: [64, 64]
   weight_sampling: True
-  root_folder: "/Permian/dataset" # Replace with your own!
-  train_csv: "train.csv" # train.csv for the full dataset path relative to root_folder
+  root_folder: C:\Users\DELL\Documents\GitHub\STARCOP\notebooks\datasets\STARCOP_train_easy # Replace with your own!
+  train_csv: train.csv # train.csv for the full dataset path relative to root_folder
 
 model:
   train: True # if in train model, we start from scratch, except for when we set 'resume_from_checkpoint'
